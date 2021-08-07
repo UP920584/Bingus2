@@ -1,0 +1,6 @@
+.env
+.idea
+__pycache__
+resources
+lib
+test.py
