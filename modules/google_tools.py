@@ -1,6 +1,7 @@
 from google.cloud import vision
 from dotenv import load_dotenv
 
+import os
 import json
 import random
 import urllib
