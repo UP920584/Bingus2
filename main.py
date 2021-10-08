@@ -1,6 +1,7 @@
 import os
 import datetime
 import string
+import re
 from asyncio import get_event_loop
 from aiohttp.web import AppRunner, Application, TCPSite
 # API
@@ -17,15 +18,17 @@ import discord
 from discord.ext import tasks
 
 from module import Module
-from modules.google_tools import google_tools 
-from modules.spoilers import spoilers 
-from modules.inspiro import inspiro 
+from modules.google_tools import google_tools
+from modules.spoilers import spoilers
+from modules.inspiro import inspiro
 from modules.voice_tools import voice_tools
+from modules.time_tools import time_tools
 
 gt = google_tools()
 vt = voice_tools()
 spoilers = spoilers()
 inspiro = inspiro()
+time = time_tools()
 
 from api import routes
 
@@ -42,6 +45,7 @@ bot = discord.Client(intents=intents)
 
 Module.bot = bot
 vt.check_requests.start()
+time.check_reminders.start()
 
 @bot.event
 async def on_ready():
@@ -70,13 +74,18 @@ async def on_message(message):
                     await vt.unkick()
                 elif content == "bingus help":
                     await reply("""
-    <a:CatPop:795041308615901256> search for images with a dash eg: "__-bingus__" would search for images of bingus
-    <:catpray:872895629691617320> send an inspiring image from inspiro bot with "__send inspiro__"
-    <:hehe:872895682468524032> spoiler an image or text by replying with "__spoiler this__"
-    <:WiseChamp:795041234938363905> attempt to kick someone with "kick @person" if you dont wanna be kicked just say "dont kick me" 
+<a:CatPop:795041308615901256> search for images with a dash eg: "__-bingus__" would search for images of bingus
+<:catpray:872895629691617320> send an inspiring image from inspiro bot with "__send inspiro__"
+<:pcSir:795041433915752519> spoiler an image or text by replying with "__spoiler this__"
+<:WiseChamp:795041234938363905> attempt to kick someone with "kick @person" if you dont wanna be kicked just say "dont kick me" 
+<:ping:896003097653051425> set a reminder for a message by replying to it like "remind in in 1 minute bingus" or "remind me in 12 hours bingus" 
                     """)
+                elif re.match("^remind me in [1-9][0-9]{0,3} (minute)?(hour)?s? bingus", content):
+                    params = content.split(' ')
+                    await time.create_reminder(int(params[3]) * (60 if params[4].strip('s') == "minute" else 3600))
+                    await reply("reminder set <:blusho:896004717820391424>")
                 elif content == "testing123":
-                    await bot.connect(message.author.voice.channel.connect())
+                    await time.check_reminders()
                     #await bot. message.author.edit(voice_channel=None)
     except Exception as e:
         dev = message.guild.get_member(312612747898650625)
