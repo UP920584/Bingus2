@@ -8,7 +8,7 @@ class music(Module):
     async def play(self, song):
         state = self.ctx.author.voice
         if state:
-            vc = state.channel.connect()
+            vc = await state.channel.connect()
             vc.play(discord.FFmpegPCMAudio(executable="lib/ffmpeg.exe", source="resources/" + song))
             while vc.is_playing():  
                 await asyncio.sleep(1)  
