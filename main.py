@@ -23,12 +23,14 @@ from modules.spoilers import spoilers
 from modules.inspiro import inspiro
 from modules.voice_tools import voice_tools
 from modules.time_tools import time_tools
+from modules.music import music
 
 gt = google_tools()
 vt = voice_tools()
 spoilers = spoilers()
 inspiro = inspiro()
 time = time_tools()
+music = music()
 
 from api import routes
 
@@ -84,6 +86,14 @@ async def on_message(message):
                     params = content.split(' ')
                     await time.create_reminder(int(params[3]) * (60 if params[4].strip('s') == "minute" else 3600))
                     await reply("reminder set <:blusho:896004717820391424>")
+                elif content == "bam bam badam":
+                    await music.play("song.mp3")
+                elif content == "bingus bang bong":
+                    await music.play("bingbang.mp3")
+                elif content == "take me on holiday bingus":
+                    await music.play("kokomo.mp3")
+                elif content == "get down mr bingus":
+                    await music.close()
                 elif content == "testing123":
                     await time.check_reminders()
                     #await bot. message.author.edit(voice_channel=None)
