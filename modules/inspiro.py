@@ -16,7 +16,8 @@ class inspiro(Module):
             driver = webdriver.Chrome(executable_path=path)
         else:
             options = webdriver.ChromeOptions() 
-            options.add_argument("--headless");
+            options.add_argument("--headless")
+            options.add_argument("--disable-dev-shm-usage")
             driver = webdriver.Chrome(chrome_options=options)
         driver.get("https://inspirobot.me/")
         button = driver.find_element_by_class_name("button-wrapper")
