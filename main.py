@@ -24,6 +24,7 @@ from modules.inspiro import inspiro
 from modules.voice_tools import voice_tools
 from modules.time_tools import time_tools
 from modules.music import music
+from modules.insta import insta
 
 gt = google_tools()
 vt = voice_tools()
@@ -31,6 +32,7 @@ spoilers = spoilers()
 inspiro = inspiro()
 time = time_tools()
 music = music()
+insta = insta()
 
 from api import routes
 
@@ -49,6 +51,7 @@ Module.bot = bot
 vt.check_requests.start()
 time.check_reminders.start()
 
+
 @bot.event
 async def on_ready():
     await bot.change_presence(activity= discord.Activity(type=discord.ActivityType.playing,name="\"bingus help\" for commands"))
@@ -58,7 +61,7 @@ async def on_ready():
 async def on_message(message):
     try: 
         content = message.content.strip("'")
-        
+        params = content.split(' ') 
         Module.ctx = message
         reply = Module.reply = message.channel.send 
         if content != "":
@@ -83,17 +86,23 @@ async def on_message(message):
 <:ping:896003097653051425> set a reminder for a message by replying to it like "remind in in 1 minute bingus" or "remind me in 12 hours bingus" 
                     """)
                 elif re.match("^remind me in [1-9][0-9]{0,3} (minute)?(hour)?s? bingus", content):
-                    params = content.split(' ')
                     await time.create_reminder(int(params[3]) * (60 if params[4].strip('s') == "minute" else 3600))
                     await reply("reminder set <:blusho:896004717820391424>")
                 elif content == "bam bam badam":
                     await music.play("song.mp3")
-                elif content == "bingus bang bong":
+                elif re.match("bing(us)? bang(us)? bong(us)?", content):
                     await music.play("bingbang.mp3")
                 elif content == "take me on holiday bingus":
                     await music.play("kokomo.mp3")
                 elif content == "get down mr bingus":
                     await music.close()
+                elif content.startswith("bingus send"):  
+                    print(params[2])
+                    await insta.get_post(params[2])
+                elif content == "bingus random":
+                    await insta.get_random()
+                elif content.startswith("bingus pool"):
+                    await insta.upsert_pool(params[2], params[3])
                 elif content == "testing123":
                     await time.check_reminders()
                     #await bot. message.author.edit(voice_channel=None)
@@ -102,7 +111,7 @@ async def on_message(message):
         await dev.send(e)
 
 
-
+# bingus pass word bingus12345A
 
 async def run_bot():
 
