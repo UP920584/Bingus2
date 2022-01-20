@@ -19,10 +19,12 @@ class insta(Module):
         
         decoded = urlopen(query[0]["url"]).read().decode('utf8').strip("'")
         array = json.loads(decoded)
-        url = array[random.randint(0, len(array))] + "media"
-        get_direct = urlopen(url)
+        url = array[random.randint(0, len(array))]
+        if "instagram" in url:
+            req = urlopen(url + "media") 
+            url = req.geturl()
 
-        return self.reply(get_direct.geturl())
+        return self.reply(url)
 
     def get_random(self):
         query = db.all()
